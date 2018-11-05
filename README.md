@@ -1,24 +1,17 @@
-# README
+# Ways of Seeing: ORMS & SQL Views
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Example Repo
 
-Things you may want to cover:
+### Up & Running
 
-* Ruby version
+```bash
+git clone git@github.com:annarankin/vet-orm-ruby-example.git
+cd vet-orm-ruby-example
+bundle install
+rake db:create
+rake db:seed
+rails s
+```
 
-* System dependencies
+Visit `localhost:3000/users` in your browser 🤘
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
