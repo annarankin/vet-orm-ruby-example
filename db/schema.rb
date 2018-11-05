@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_05_035946) do
+ActiveRecord::Schema.define(version: 2018_11_05_050134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,12 @@ ActiveRecord::Schema.define(version: 2018_11_05_035946) do
     t.datetime "date"
     t.bigint "pet_id"
     t.index ["pet_id"], name: "index_appointments_on_pet_id"
+  end
+
+  create_table "ar_internal_metadata", primary_key: "key", id: :string, force: :cascade do |t|
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pets", force: :cascade do |t|
@@ -32,5 +38,17 @@ ActiveRecord::Schema.define(version: 2018_11_05_035946) do
     t.string "last_name"
     t.string "email"
   end
+
+
+  create_view :pets_with_upcoming_appointments,  sql_definition: <<-SQL
+      SELECT DISTINCT ON (pets.id) pets.id,
+      users.id AS user_id,
+      pets.name,
+      min(appointments.date) AS next_appointment_date
+     FROM ((users
+       JOIN pets ON ((pets.user_id = users.id)))
+       LEFT JOIN appointments ON (((pets.id = appointments.pet_id) AND (appointments.date >= CURRENT_DATE))))
+    GROUP BY users.id, pets.id, pets.name;
+  SQL
 
 end

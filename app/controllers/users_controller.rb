@@ -1,34 +1,41 @@
 class UsersController < ActionController::API
+  def index
+    users = User
+      .includes(:pet_with_upcoming_appointments)
+      .all
+      .map do |user|
+        {
+          user: {
+            id: user.id,
+            name: "#{user.first_name} #{user.last_name}"
+          },
+          pets: user.pet_with_upcoming_appointments.map do |pet|
+            {
+              id: pet.id,
+              name: pet.name,
+              next_appointment_date: pet.next_appointment_date
+            }
+          end
+        }
+      end
+    render json: users
+  end
+
   def show
     user = User
-      .includes(:pets)
+      .includes(:pet_with_upcoming_appointments)
       .find(params[:id])
-
-    upcoming_appointments = user
-      .appointments
-      .where(
-        'pet_id IN (?) AND date >= ?',
-        user.pets.pluck(:id),
-        Time.current
-      )
-      .order(date: :asc)
 
     render json: {
       user: {
         id: user.id,
         name: "#{user.first_name} #{user.last_name}"
       },
-      pets: user.pets.map do |pet|
-        next_appointment_date = user
-          .appointments
-          .order(date: :asc)
-          .find_by('date >= ?', Time.current)
-          &.date
-
+      pets: user.pet_with_upcoming_appointments.map do |pet|
         {
           id: pet.id,
           name: pet.name,
-          next_appointment_date: next_appointment_date
+          next_appointment_date: pet.next_appointment_date
         }
       end
     }
