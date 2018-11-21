@@ -8,8 +8,7 @@
 git clone git@github.com:annarankin/vet-orm-ruby-example.git
 cd vet-orm-ruby-example
 bundle install
-rake db:create
-rake db:seed
+rake db:create db:migrate db:seed
 rails s
 ```
 

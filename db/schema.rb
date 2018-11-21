@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2018_11_05_050134) do
       min(appointments.date) AS next_appointment_date
      FROM ((users
        JOIN pets ON ((pets.user_id = users.id)))
-       LEFT JOIN appointments ON (((pets.id = appointments.pet_id) AND (appointments.date >= CURRENT_DATE))))
+       LEFT JOIN appointments ON (((pets.id = appointments.pet_id) AND (appointments.date >= ('now'::text)::date))))
     GROUP BY users.id, pets.id, pets.name;
   SQL
 
